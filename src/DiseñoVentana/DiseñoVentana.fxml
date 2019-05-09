@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DiseñoVentana.DiseñoVentanaController">
+   <children>
+      <TableView fx:id="tableViewDiseño" prefHeight="212.0" prefWidth="609.0">
+        <columns>
+          <TableColumn fx:id="columnNombre" prefWidth="75.0" text="Nombre" />
+          <TableColumn fx:id="columnNumpilotos" prefWidth="93.0" text="Numpilotos" />
+            <TableColumn fx:id="columnEmail" prefWidth="183.0" text="E-mail" />
+            <TableColumn fx:id="columnPatrocinador" prefWidth="106.0" text="Patrocinador" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

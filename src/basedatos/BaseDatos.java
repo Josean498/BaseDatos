@@ -6,6 +6,7 @@
 package basedatos;
 
 import basedatos.entities.Equipos;
+import basedatos.entities.Patrocinador;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -30,9 +31,17 @@ public class BaseDatos {
 
         // REALIZAR AQUÍ LAS OPERACIONES SOBRE LA BASE DE DATOS
         // Introducción de datos en la base de datos mediante transacciones.
+        Patrocinador patrocinadorShell = new Patrocinador(0, "Shell");
+        Patrocinador patrocinadorAlfaRomeo = new Patrocinador(0, "Alfa Romeo");
+        
+        em.getTransaction().begin();
+        em.persist(patrocinadorShell);
+        em.persist(patrocinadorAlfaRomeo);
+        em.getTransaction().commit();
+        
         Equipos equipoFerrari = new Equipos(0, "Ferrari");
         Equipos equipoMclaren = new Equipos(0, "Mclaren");
-
+        
         em.getTransaction().begin();
         em.persist(equipoFerrari);
         em.persist(equipoMclaren);
