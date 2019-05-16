@@ -9,12 +9,10 @@ import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -32,18 +30,21 @@ public class MainScene extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException, SQLException {
         
+        StackPane rootMain = new StackPane();
+        
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("DiseñoVentana.fxml"));
-        Parent root = fxmlLoader.load();
+        Pane rootDiseñoVentanaView = fxmlLoader.load();
+        rootMain.getChildren().add(rootDiseñoVentanaView);
 
         emf = Persistence.createEntityManagerFactory("BaseDatosPU");
         em = emf.createEntityManager();
         
         DiseñoVentanaController equiposViewController = (DiseñoVentanaController) fxmlLoader.getController();                
         equiposViewController.setEntityManager(em);
-        equiposViewController.cargarTodasPersonas();
+        equiposViewController.cargarTodosEquipos();
         
-        Scene scene = new Scene(root, 300, 250);
-        
+        Scene scene = new Scene(rootMain, 600, 500);
+
         primaryStage.setTitle("Base de datos");
         primaryStage.setScene(scene);
         primaryStage.show(); 

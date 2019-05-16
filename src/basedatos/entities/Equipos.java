@@ -7,10 +7,8 @@ package basedatos.entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,12 +18,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -40,6 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Equipos.findByNombre", query = "SELECT e FROM Equipos e WHERE e.nombre = :nombre")
     , @NamedQuery(name = "Equipos.findByEmail", query = "SELECT e FROM Equipos e WHERE e.email = :email")
     , @NamedQuery(name = "Equipos.findByNumpilotos", query = "SELECT e FROM Equipos e WHERE e.numpilotos = :numpilotos")
+    , @NamedQuery(name = "Equipos.findByPatrocinio", query = "SELECT e FROM Equipos e WHERE e.patrocinio = :patrocinio")
     , @NamedQuery(name = "Equipos.findByNumempleados", query = "SELECT e FROM Equipos e WHERE e.numempleados = :numempleados")
     , @NamedQuery(name = "Equipos.findByFeccreacion", query = "SELECT e FROM Equipos e WHERE e.feccreacion = :feccreacion")
     , @NamedQuery(name = "Equipos.findByNumcampeonatos", query = "SELECT e FROM Equipos e WHERE e.numcampeonatos = :numcampeonatos")
@@ -60,6 +57,8 @@ public class Equipos implements Serializable {
     private String email;
     @Column(name = "NUMPILOTOS")
     private Integer numpilotos;
+    @Column(name = "PATROCINIO")
+    private Boolean patrocinio;
     @Column(name = "NUMEMPLEADOS")
     private Short numempleados;
     @Column(name = "FECCREACION")
@@ -72,11 +71,9 @@ public class Equipos implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "SALARIOMEDIOEQUIPO")
     private BigDecimal salariomedioequipo;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "patrocinador")
-    private Collection<Equipos> equiposCollection;
     @JoinColumn(name = "PATROCINADOR", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private Equipos patrocinador;
+    private Patrocinador patrocinador;
 
     public Equipos() {
     }
@@ -122,6 +119,14 @@ public class Equipos implements Serializable {
         this.numpilotos = numpilotos;
     }
 
+    public Boolean getPatrocinio() {
+        return patrocinio;
+    }
+
+    public void setPatrocinio(Boolean patrocinio) {
+        this.patrocinio = patrocinio;
+    }
+
     public Short getNumempleados() {
         return numempleados;
     }
@@ -162,20 +167,11 @@ public class Equipos implements Serializable {
         this.salariomedioequipo = salariomedioequipo;
     }
 
-    @XmlTransient
-    public Collection<Equipos> getEquiposCollection() {
-        return equiposCollection;
-    }
-
-    public void setEquiposCollection(Collection<Equipos> equiposCollection) {
-        this.equiposCollection = equiposCollection;
-    }
-
-    public Equipos getPatrocinador() {
+    public Patrocinador getPatrocinador() {
         return patrocinador;
     }
 
-    public void setPatrocinador(Equipos patrocinador) {
+    public void setPatrocinador(Patrocinador patrocinador) {
         this.patrocinador = patrocinador;
     }
 

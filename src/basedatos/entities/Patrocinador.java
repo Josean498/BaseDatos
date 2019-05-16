@@ -6,8 +6,10 @@
 package basedatos.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,10 +17,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -49,6 +53,8 @@ public class Patrocinador implements Serializable {
     @Column(name = "FECCONTRATO")
     @Temporal(TemporalType.DATE)
     private Date feccontrato;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "patrocinador")
+    private Collection<Equipos> equiposCollection;
 
     public Patrocinador() {
     }
@@ -92,6 +98,15 @@ public class Patrocinador implements Serializable {
 
     public void setFeccontrato(Date feccontrato) {
         this.feccontrato = feccontrato;
+    }
+
+    @XmlTransient
+    public Collection<Equipos> getEquiposCollection() {
+        return equiposCollection;
+    }
+
+    public void setEquiposCollection(Collection<Equipos> equiposCollection) {
+        this.equiposCollection = equiposCollection;
     }
 
     @Override

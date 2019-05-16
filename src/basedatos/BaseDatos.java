@@ -40,7 +40,9 @@ public class BaseDatos {
         em.getTransaction().commit();
         
         Equipos equipoFerrari = new Equipos(0, "Ferrari");
+        equipoFerrari.setPatrocinador(patrocinadorShell);
         Equipos equipoMclaren = new Equipos(0, "Mclaren");
+        equipoMclaren.setPatrocinador(patrocinadorAlfaRomeo);
         
         em.getTransaction().begin();
         em.persist(equipoFerrari);
