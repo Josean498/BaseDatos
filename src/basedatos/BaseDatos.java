@@ -33,10 +33,22 @@ public class BaseDatos {
         // Introducción de datos en la base de datos mediante transacciones.
         Patrocinador patrocinadorShell = new Patrocinador(0, "Shell");
         Patrocinador patrocinadorAlfaRomeo = new Patrocinador(0, "Alfa Romeo");
+        Patrocinador patrocinadorRedBull = new Patrocinador(0, "Red Bull");
+        Patrocinador patrocinadorRacingPoint = new Patrocinador(0, "Racing Point");
+        Patrocinador patrocinadorTagHeuer = new Patrocinador(0, "Tag Heuger");
+        Patrocinador patrocinadorBenetton = new Patrocinador(0, "Benetton");
+        Patrocinador patrocinadorCamel = new Patrocinador(0, "Camel");
+        Patrocinador patrocinadorRolex = new Patrocinador(0, "Rolex");
         
         em.getTransaction().begin();
         em.persist(patrocinadorShell);
         em.persist(patrocinadorAlfaRomeo);
+        em.persist(patrocinadorRedBull);
+        em.persist(patrocinadorRacingPoint);
+        em.persist(patrocinadorTagHeuer);
+        em.persist(patrocinadorBenetton);
+        em.persist(patrocinadorCamel);
+        em.persist(patrocinadorRolex);
         em.getTransaction().commit();
         
         Equipos equipoFerrari = new Equipos(0, "Ferrari");
@@ -48,7 +60,7 @@ public class BaseDatos {
         em.persist(equipoFerrari);
         em.persist(equipoMclaren);
         em.getTransaction().commit();
-                
+//                
         // Cerrar la conexión con la base de datos
         em.close(); 
         emf.close(); 

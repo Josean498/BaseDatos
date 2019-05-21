@@ -23,46 +23,49 @@ import javax.persistence.Persistence;
  * @author Jose
  */
 public class MainScene extends Application {
-    
+
     private EntityManagerFactory emf;
     private EntityManager em;
-    
+
     @Override
     public void start(Stage primaryStage) throws IOException, SQLException {
-        
+
         StackPane rootMain = new StackPane();
-        
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("DiseñoVentana.fxml"));
         Pane rootDiseñoVentanaView = fxmlLoader.load();
         rootMain.getChildren().add(rootDiseñoVentanaView);
 
         emf = Persistence.createEntityManagerFactory("BaseDatosPU");
         em = emf.createEntityManager();
-        
-        DiseñoVentanaController equiposViewController = (DiseñoVentanaController) fxmlLoader.getController();                
+
+        // Llamada desde la clase controladora para añadirlo al panel y mostrarlo en la tabla. 
+        DiseñoVentanaController equiposViewController = (DiseñoVentanaController) fxmlLoader.getController();
         equiposViewController.setEntityManager(em);
         equiposViewController.cargarTodosEquipos();
-        
+
         Scene scene = new Scene(rootMain, 600, 500);
 
         primaryStage.setTitle("Base de datos");
         primaryStage.setScene(scene);
-        primaryStage.show(); 
+        primaryStage.show();
     }
+
     @Override
-        public void stop() throws Exception {
-            em.close(); 
-            emf.close(); 
-            try { 
-                DriverManager.getConnection("jdbc:derby:BDProgramacion;shutdown=true"); 
-            } catch (SQLException ex) { 
-              }        
+    public void stop() throws Exception {
+        em.close();
+        emf.close();
+        try {
+            DriverManager.getConnection("jdbc:derby:BDProgramacion;shutdown=true");
+        } catch (SQLException ex) {
         }
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         launch(args);
     }
-    
+
 }

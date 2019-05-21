@@ -41,7 +41,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Equipos.findByFeccreacion", query = "SELECT e FROM Equipos e WHERE e.feccreacion = :feccreacion")
     , @NamedQuery(name = "Equipos.findByNumcampeonatos", query = "SELECT e FROM Equipos e WHERE e.numcampeonatos = :numcampeonatos")
     , @NamedQuery(name = "Equipos.findByNumvictorias", query = "SELECT e FROM Equipos e WHERE e.numvictorias = :numvictorias")
-    , @NamedQuery(name = "Equipos.findBySalariomedioequipo", query = "SELECT e FROM Equipos e WHERE e.salariomedioequipo = :salariomedioequipo")})
+    , @NamedQuery(name = "Equipos.findBySalariomedioequipo", query = "SELECT e FROM Equipos e WHERE e.salariomedioequipo = :salariomedioequipo")
+    , @NamedQuery(name = "Equipos.findByFoto", query = "SELECT e FROM Equipos e WHERE e.foto = :foto")})
 public class Equipos implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -56,7 +57,7 @@ public class Equipos implements Serializable {
     @Column(name = "EMAIL")
     private String email;
     @Column(name = "NUMPILOTOS")
-    private Integer numpilotos;
+    private Short numpilotos;
     @Column(name = "PATROCINIO")
     private Boolean patrocinio;
     @Column(name = "NUMEMPLEADOS")
@@ -71,6 +72,8 @@ public class Equipos implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "SALARIOMEDIOEQUIPO")
     private BigDecimal salariomedioequipo;
+    @Column(name = "FOTO")
+    private String foto;
     @JoinColumn(name = "PATROCINADOR", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Patrocinador patrocinador;
@@ -111,11 +114,11 @@ public class Equipos implements Serializable {
         this.email = email;
     }
 
-    public Integer getNumpilotos() {
+    public Short getNumpilotos() {
         return numpilotos;
     }
 
-    public void setNumpilotos(Integer numpilotos) {
+    public void setNumpilotos(Short numpilotos) {
         this.numpilotos = numpilotos;
     }
 
@@ -165,6 +168,14 @@ public class Equipos implements Serializable {
 
     public void setSalariomedioequipo(BigDecimal salariomedioequipo) {
         this.salariomedioequipo = salariomedioequipo;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
     public Patrocinador getPatrocinador() {

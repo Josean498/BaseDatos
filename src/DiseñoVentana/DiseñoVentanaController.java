@@ -38,7 +38,6 @@ import javax.persistence.Query;
  * @author Jose
  */
 public class DiseñoVentanaController implements Initializable {
-
     /**
      * Initializes the controller class.
      */
@@ -50,8 +49,6 @@ public class DiseñoVentanaController implements Initializable {
     @FXML
     private TableView<Equipos> tableViewDiseño;
     @FXML
-    private TableColumn<Equipos, String> columnNumpilotos;
-    @FXML
     private TableColumn<Equipos, String> columnPatrocinador;
     @FXML
     private TextField textFieldNombre;
@@ -61,15 +58,20 @@ public class DiseñoVentanaController implements Initializable {
     private Equipos equipoSeleccionado;
     @FXML
     private AnchorPane rootDiseñoVentanaView;
-
+    
+// Para que en la ventana se puedan mostrar datos contenidos en la base de datos
+// ,el controlador debe tener acceso al objeto EntityManager que permite el acceso a los datos.
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+//    Cada columna tiene que estar asociada a una de las propiedades de la clase entidad que se ha indicado 
+//    para el TableView.En este ejemplo se va a usar la clase Equipos, por lo que habrá que indicar 
+//    qué propiedad de la clase Equipos se mostrará 
+//    en la columna columnNombre, y así sucesivamente con cada columna.
         columnNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        columnNumpilotos.setCellValueFactory(new PropertyValueFactory<>("numpilotos"));
         columnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         columnPatrocinador.setCellValueFactory(
             cellData -> {
@@ -84,7 +86,7 @@ public class DiseñoVentanaController implements Initializable {
             equipoSeleccionado = newValue;
             if (equipoSeleccionado != null) {
                 textFieldNombre.setText(equipoSeleccionado.getNombre());
-                textFieldEmail.setText(equipoSeleccionado.getEmail());
+                textFieldEmail.setText(equipoSeleccionado.getEmail());         
             } else {
                 textFieldNombre.setText("");
                 textFieldEmail.setText("");
@@ -93,6 +95,7 @@ public class DiseñoVentanaController implements Initializable {
     }
     
     public void cargarTodosEquipos() {
+        // Hace una consulta a la base de datos con todos los equipos disponibles.
         Query queryEquiposFindAll = entityManager.createNamedQuery("Equipos.findAll");
         List<Equipos> listEquipos = queryEquiposFindAll.getResultList();
         tableViewDiseño.setItems(FXCollections.observableArrayList(listEquipos));
@@ -100,22 +103,28 @@ public class DiseñoVentanaController implements Initializable {
 
     @FXML
     private void onActionButtonGuardar(ActionEvent event) {
-        if (equipoSeleccionado != null) {
+        if (equipoSeleccionado != null) {   
             equipoSeleccionado.setNombre(textFieldNombre.getText());
             equipoSeleccionado.setEmail(textFieldEmail.getText());
             entityManager.getTransaction().begin();
             entityManager.merge(equipoSeleccionado);
             entityManager.getTransaction().commit();
-
+            
+//          Se indicará que se actualicen en el TableView los nuevos valores del objeto. 
+//          En primer lugar se obtiene el número de la fila seleccionada en el TableView y 
+//          luego se vuelve a asignar el mismo objeto a esa fila, de manera que se mostrarán los 
+//          nuevos valores que contenga el objeto
             int numFilaSeleccionada = tableViewDiseño.getSelectionModel().getSelectedIndex();
             tableViewDiseño.getItems().set(numFilaSeleccionada, equipoSeleccionado);
+            
+//          Si no se indicara nada más, el foco de la ventana permanecería en el botón Guardar, 
+//          que es el último elemento que se ha usado. Es conveniente que el foco vuelva al TableView 
+//          para que el usuario pueda seguir moviéndose por su contenido.
             TablePosition pos = new TablePosition(tableViewDiseño, numFilaSeleccionada, null);
             tableViewDiseño.getFocusModel().focus(pos);
             tableViewDiseño.requestFocus();
         }
     }
-    
-    
 
     @FXML
     private void onActionButtonNuevo(ActionEvent event) {
@@ -134,48 +143,57 @@ public class DiseñoVentanaController implements Initializable {
             VentanaFormularioController ventanaFormularioController = (VentanaFormularioController) fxmlLoader.getController();  
             ventanaFormularioController.setRootDiseñoVentanaView(rootDiseñoVentanaView);
             
-            ventanaFormularioController.setTableViewPrevio(tableViewDiseño);
-            
             equipoSeleccionado = new Equipos();
+            // Hace referencia al formulario y si se pulsa este boton te crea un nuevo equipo.
             ventanaFormularioController.setEquipo(entityManager, equipoSeleccionado, true);
+            
+            ventanaFormularioController.setTableViewPrevio(tableViewDiseño);
+            ventanaFormularioController.mostrarDatos();
 
             } catch (IOException ex) {
             Logger.getLogger(DiseñoVentanaController.class.getName()).log(Level.SEVERE, null, ex);
               }
     }
 
-
     @FXML
     private void onActionButtonSuprimir(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmar");
-        alert.setHeaderText("¿Desea suprimir el siguiente registro?");
-        alert.setContentText(equipoSeleccionado.getNombre() + " "
-                + equipoSeleccionado.getEmail());
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
-            // Acciones a realizar si el usuario acepta
-            entityManager.getTransaction().begin();
-            entityManager.merge(equipoSeleccionado);
-            entityManager.remove(equipoSeleccionado);
-            entityManager.getTransaction().commit();
+       if(equipoSeleccionado != null && equipoSeleccionado.getId() == null){ 
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmar");
+            alert.setHeaderText("¿Desea suprimir el siguiente registro?");
+            alert.setContentText(equipoSeleccionado.getNombre() + " "
+                    + equipoSeleccionado.getEmail());
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                // Acciones a realizar si el usuario acepta
+                entityManager.getTransaction().begin();
+                entityManager.merge(equipoSeleccionado);
+                entityManager.remove(equipoSeleccionado);
+                entityManager.getTransaction().commit();
 
-            tableViewDiseño.getItems().remove(equipoSeleccionado);
+                tableViewDiseño.getItems().remove(equipoSeleccionado);
 
-            tableViewDiseño.getFocusModel().focus(null);
-            tableViewDiseño.requestFocus();
-        } else {
-            // Acciones a realizar si el usuario cancela
-            int numFilaSeleccionada = tableViewDiseño.getSelectionModel().getSelectedIndex();
-            tableViewDiseño.getItems().set(numFilaSeleccionada, equipoSeleccionado);
-            TablePosition pos = new TablePosition(tableViewDiseño, numFilaSeleccionada, null);
-            tableViewDiseño.getFocusModel().focus(pos);
-            tableViewDiseño.requestFocus();  
-        }
+                tableViewDiseño.getFocusModel().focus(null);
+                tableViewDiseño.requestFocus();
+            } else {
+                // Acciones a realizar si el usuario cancela
+                int numFilaSeleccionada = tableViewDiseño.getSelectionModel().getSelectedIndex();
+                tableViewDiseño.getItems().set(numFilaSeleccionada, equipoSeleccionado);
+                TablePosition pos = new TablePosition(tableViewDiseño, numFilaSeleccionada, null);
+                tableViewDiseño.getFocusModel().focus(pos);
+                tableViewDiseño.requestFocus();  
+            }
+       } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Atnción");
+            alert.setHeaderText("Debe seleccionar un registro");
+            alert.showAndWait();
+       }
     }
 
     @FXML
     private void onActionButtonEditar(ActionEvent event) {
+      if(equipoSeleccionado != null){   
         try {
             // Cargar la vista de detalle
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("VentanaFormulario.fxml"));
@@ -188,9 +206,10 @@ public class DiseñoVentanaController implements Initializable {
             ventanaFormularioController.setRootDiseñoVentanaView(rootDiseñoVentanaView);
             ventanaFormularioController.setTableViewPrevio(tableViewDiseño);
             
+            // Hace referencia al formulario y si se pulsa este boton te permite modificar los datos del equipo.
             ventanaFormularioController.setEquipo(entityManager, equipoSeleccionado, false);
+            ventanaFormularioController.mostrarDatos();
             
-
             // Añadir la vista de detalle al StackPane principal para que se muestre
             StackPane rootMain = (StackPane)rootDiseñoVentanaView.getScene().getRoot();
             rootMain.getChildren().add(rootVentanaView);
@@ -198,5 +217,11 @@ public class DiseñoVentanaController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(DiseñoVentanaController.class.getName()).log(Level.SEVERE, null, ex);
         }
+      } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Atnción");
+            alert.setHeaderText("Debe seleccionar un registro");
+            alert.showAndWait();
+       }  
     }
 }
