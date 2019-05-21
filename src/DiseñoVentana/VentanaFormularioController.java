@@ -19,6 +19,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -26,6 +27,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -358,5 +361,34 @@ public class VentanaFormularioController implements Initializable {
         TablePosition pos = new TablePosition(tableViewPrevio, numFilaSeleccionada, null);
         tableViewPrevio.getFocusModel().focus(pos);
         tableViewPrevio.requestFocus();
+    }
+
+    @FXML
+    private void onActionButtonEliminarFoto(ActionEvent event) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Confirmar supresión de imagen");
+        alert.setHeaderText("¿Desea SUPRIMIR el archivo asociado a la imagen, \n"
+                + "quitar la foto pero MANTENER el archivo, \no CANCELAR la operación?");
+        alert.setContentText("Elija la opción deseada:");
+
+        ButtonType buttonTypeEliminar = new ButtonType("Suprimir");
+        ButtonType buttonTypeMantener = new ButtonType("Mantener");
+        ButtonType buttonTypeCancel = new ButtonType("Cancelar", ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonTypeEliminar, buttonTypeMantener, buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeEliminar){
+            String imageFileName = equipo.getFoto();
+            File file = new File(CARPETA_FOTOS + "/" + imageFileName);
+            if(file.exists()) {
+                file.delete();
+            }
+            equipo.setFoto(null);
+            imageViewFoto.setImage(null);
+        } else if (result.get() == buttonTypeMantener) {
+            equipo.setFoto(null);
+            imageViewFoto.setImage(null);
+        } 
     }
 }

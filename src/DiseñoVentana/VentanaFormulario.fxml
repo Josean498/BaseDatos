@@ -148,13 +148,15 @@
             <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="10">
                <children>
                   <ImageView fx:id="imageViewFoto" fitHeight="95.0" fitWidth="184.0" pickOnBounds="true" preserveRatio="true" />
-                  <Button mnemonicParsing="false" onAction="#onActionButtonExaminar" text="Examinar">
+                  <Button mnemonicParsing="false" onAction="#onActionButtonExaminar" prefHeight="27.0" prefWidth="79.0" text="Examinar" />
+                  <Button mnemonicParsing="false" onAction="#onActionButtonEliminarFoto" prefHeight="27.0" prefWidth="73.0" text="Eliminar">
                      <HBox.margin>
-                        <Insets left="60.0" />
+                        <Insets />
                      </HBox.margin>
                   </Button>
                </children>
             </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" />
             <Button mnemonicParsing="false" onAction="#onActionButtonGuardar" text="Guardar" GridPane.columnIndex="2">
                <GridPane.margin>
                   <Insets top="20.0" />
